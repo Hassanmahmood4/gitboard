@@ -1,0 +1,795 @@
+@import "tailwindcss";
+
+:root {
+  /* Design system — premium dark SaaS */
+  --bg-primary: #020617;
+  --bg-secondary: #0a0f1c;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --accent: #8b5cf6;
+  --accent-secondary: #a78bfa;
+  --accent-rgb: 139, 92, 246;
+  --accent-glow-soft: rgba(139, 92, 246, 0.25);
+  --accent-glow-strong: rgba(139, 92, 246, 0.5);
+
+  /* Semantic aliases (existing components) */
+  --background: var(--bg-primary);
+  --surface: var(--bg-secondary);
+  --foreground: var(--text-primary);
+  --muted: var(--text-secondary);
+  --accent-color: var(--accent);
+  --card: #111827;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.1);
+  --purple: var(--accent);
+
+  /* Hover-only accent shadow (use on :hover / active, not default) */
+  --shadow-accent-hover: 0 0 20px var(--accent-glow-strong);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-purple: var(--accent);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+  min-height: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ─── Hero: premium neon light field (layered, non-uniform) ─── */
+.hero-breathe-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  contain: paint;
+}
+
+.hero-lf-stack {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: hero-lf-field-drift 36s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes hero-lf-field-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -18px, 0);
+  }
+}
+
+@keyframes hero-lf-pulse-a {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) scaleY(1);
+    opacity: var(--lf-op-low, 0.25);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-10px) scaleY(1.03);
+    opacity: var(--lf-op-high, 0.55);
+  }
+}
+
+@keyframes hero-lf-pulse-b {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) scaleY(1);
+    opacity: var(--lf-op-low, 0.3);
+  }
+  50% {
+    transform: translateX(-50%) translateY(8px) scaleY(1.05);
+    opacity: var(--lf-op-high, 0.65);
+  }
+}
+
+@keyframes hero-lf-pulse-c {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) scaleY(1);
+    opacity: var(--lf-op-low, 0.35);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-14px) scaleY(1.06);
+    opacity: var(--lf-op-high, 0.9);
+  }
+}
+
+.hero-lf-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-lf-layer--back {
+  z-index: 0;
+  mix-blend-mode: screen;
+  opacity: 0.95;
+}
+
+.hero-lf-layer--mid {
+  z-index: 1;
+  mix-blend-mode: screen;
+  opacity: 0.92;
+}
+
+.hero-lf-layer--front {
+  z-index: 2;
+  mix-blend-mode: screen;
+  opacity: 1;
+}
+
+/* One light ray: positioned by inline top/left/height */
+.hero-lf-ray {
+  position: absolute;
+  transform: translateZ(0);
+  width: var(--lf-w, 8px);
+}
+
+.hero-lf-ray__shaft {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  transform-origin: center top;
+  will-change: transform, opacity;
+}
+
+/* Bloom duplicate: large blur + screen */
+.hero-lf-ray__bloom {
+  position: absolute;
+  left: 50%;
+  top: -8%;
+  width: calc(var(--lf-w, 8px) * 5);
+  min-width: 48px;
+  max-width: 140px;
+  height: 116%;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  mix-blend-mode: screen;
+  filter: blur(var(--lf-bloom-blur, 32px));
+  opacity: var(--lf-bloom-op, 0.5);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.hero-lf-ray--anim-a .hero-lf-ray__shaft,
+.hero-lf-ray--anim-a .hero-lf-ray__bloom {
+  animation: hero-lf-pulse-a var(--lf-dur, 8s) ease-in-out infinite;
+  animation-delay: var(--lf-delay, 0s);
+}
+
+.hero-lf-ray--anim-b .hero-lf-ray__shaft,
+.hero-lf-ray--anim-b .hero-lf-ray__bloom {
+  animation: hero-lf-pulse-b var(--lf-dur, 7s) ease-in-out infinite;
+  animation-delay: var(--lf-delay, 0s);
+}
+
+.hero-lf-ray--anim-c .hero-lf-ray__shaft,
+.hero-lf-ray--anim-c .hero-lf-ray__bloom {
+  animation: hero-lf-pulse-c var(--lf-dur, 9.5s) ease-in-out infinite;
+  animation-delay: var(--lf-delay, 0s);
+}
+
+/* Focus wash + radial */
+.hero-breathe-radial {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 72% 48%,
+      rgba(var(--accent-rgb), 0.14),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 24% 42%,
+      rgba(var(--accent-rgb), 0.1),
+      transparent 50%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.85;
+}
+
+.hero-breathe-mesh {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 100% 80% at 50% 100%,
+      rgba(5, 8, 22, 0.9) 0%,
+      transparent 55%
+    ),
+    linear-gradient(
+      165deg,
+      rgba(5, 8, 22, 0.5) 0%,
+      transparent 45%,
+      rgba(5, 8, 22, 0.42) 100%
+    );
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+}
+
+.hero-breathe-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.032;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-lf-stack {
+    animation: none;
+  }
+
+  .hero-lf-ray__shaft,
+  .hero-lf-ray__bloom {
+    animation: none !important;
+    opacity: var(--lf-op-high, 0.5) !important;
+    transform: translateX(-50%) translateY(0) scaleY(1) !important;
+  }
+
+  .logo-marquee__track {
+    animation: none;
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .logo-marquee__group--duplicate {
+    display: none;
+  }
+}
+
+/* Logo marquee — infinite horizontal scroll (CSS only) */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.logo-marquee {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 1.75rem;
+  padding-bottom: 2.25rem;
+}
+
+@media (min-width: 640px) {
+  .logo-marquee {
+    padding-top: 2rem;
+    padding-bottom: 2.75rem;
+  }
+}
+
+.logo-marquee__heading {
+  margin: 0 auto 1.25rem;
+  max-width: 42rem;
+  padding-inline: 1rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+@media (min-width: 640px) {
+  .logo-marquee__heading {
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.16em;
+  }
+}
+
+.logo-marquee__viewport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  min-height: 2.75rem;
+}
+
+@media (min-width: 640px) {
+  .logo-marquee__viewport {
+    min-height: 3rem;
+  }
+}
+
+.logo-marquee__viewport .logo-marquee__fade {
+  pointer-events: none;
+}
+
+.logo-marquee__track {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  width: max-content;
+  animation: scroll 28s linear infinite;
+  will-change: transform;
+}
+
+.logo-marquee__group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 3rem;
+  padding-right: 3rem;
+}
+
+@media (min-width: 640px) {
+  .logo-marquee__group {
+    gap: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+.logo-marquee__item {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  max-height: 40px;
+  opacity: 0.6;
+  filter: grayscale(1);
+  transition:
+    opacity 0.25s ease,
+    filter 0.25s ease;
+}
+
+@media (min-width: 640px) {
+  .logo-marquee__item {
+    height: 36px;
+  }
+}
+
+.logo-marquee__item:hover {
+  opacity: 1;
+  filter: grayscale(0);
+}
+
+.logo-marquee__item svg {
+  height: 100%;
+  max-height: 40px;
+  width: auto;
+  max-width: 9rem;
+  color: #ffffff;
+}
+
+@media (min-width: 640px) {
+  .logo-marquee__item svg {
+    max-width: 10rem;
+  }
+}
+
+.logo-marquee__fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 4rem;
+  pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .logo-marquee__fade {
+    width: 5.5rem;
+  }
+}
+
+.logo-marquee__fade--left {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-primary), transparent);
+}
+
+.logo-marquee__fade--right {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-primary), transparent);
+}
+
+/* VS Code–style product showcase */
+.vscode-showcase__glow {
+  background: radial-gradient(
+    circle,
+    rgba(var(--accent-rgb), 0.16),
+    transparent 68%
+  );
+}
+
+/* Final CTA — dynamic glowing grid (vertical + horizontal, layered blur) */
+
+.neon-cta-section {
+  isolation: isolate;
+}
+
+@keyframes pulseGrid {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes neon-grid-streak-drift {
+  0%,
+  100% {
+    transform: translateX(0) scaleY(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateX(6px) scaleY(1.02);
+    opacity: 0.65;
+  }
+}
+
+.neon-grid-system {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+/* Radial wash — accent bloom */
+.neon-grid-radial {
+  position: absolute;
+  inset: -25%;
+  background: radial-gradient(
+    circle at 70% 50%,
+    rgba(var(--accent-rgb), 0.22),
+    transparent 60%
+  );
+  filter: blur(72px);
+  animation: pulseGrid 9s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* Vertical grid — sharp */
+.neon-grid-v-sharp {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to right,
+    rgba(var(--accent-rgb), 0.08) 0px,
+    rgba(var(--accent-rgb), 0.08) 1px,
+    transparent 1px,
+    transparent 80px
+  );
+  animation: pulseGrid 7s ease-in-out infinite;
+}
+
+/* Vertical grid — glow duplicate */
+.neon-grid-v-glow {
+  position: absolute;
+  inset: -8%;
+  background: repeating-linear-gradient(
+    to right,
+    rgba(var(--accent-rgb), 0.12) 0px,
+    rgba(var(--accent-rgb), 0.12) 1px,
+    transparent 1px,
+    transparent 80px
+  );
+  filter: blur(48px);
+  animation: pulseGrid 7.5s ease-in-out infinite;
+  animation-delay: 0.35s;
+}
+
+/* Horizontal grid — sharp */
+.neon-grid-h-sharp {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(var(--accent-rgb), 0.06) 0px,
+    rgba(var(--accent-rgb), 0.06) 1px,
+    transparent 1px,
+    transparent 80px
+  );
+  animation: pulseGrid 7s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Horizontal grid — glow duplicate */
+.neon-grid-h-glow {
+  position: absolute;
+  inset: -8%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(var(--accent-rgb), 0.09) 0px,
+    rgba(var(--accent-rgb), 0.09) 1px,
+    transparent 1px,
+    transparent 80px
+  );
+  filter: blur(56px);
+  animation: pulseGrid 7.5s ease-in-out infinite;
+  animation-delay: 2.35s;
+}
+
+/* Bright vertical streaks */
+.neon-grid-streaks {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  opacity: 0.85;
+}
+
+.neon-grid-streak {
+  position: absolute;
+  top: -12%;
+  bottom: -12%;
+  width: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(var(--accent-rgb), 0.15) 25%,
+    rgba(var(--accent-rgb), 0.85) 50%,
+    rgba(var(--accent-rgb), 0.35) 75%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 14px rgba(var(--accent-rgb), 0.22),
+    0 0 36px rgba(var(--accent-rgb), 0.08);
+  filter: blur(1.5px);
+}
+
+.neon-grid-streak--a {
+  left: 22%;
+  animation: neon-grid-streak-drift 11s ease-in-out infinite;
+}
+
+.neon-grid-streak--b {
+  left: 54%;
+  animation: neon-grid-streak-drift 14s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.neon-grid-streak--c {
+  left: 81%;
+  animation: neon-grid-streak-drift 12.5s ease-in-out infinite;
+  animation-delay: -6s;
+}
+
+/* Readability: soften grid at edges */
+.neon-grid-fade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 8, 22, 0.55) 0%,
+      transparent 35%,
+      transparent 65%,
+      rgba(5, 8, 22, 0.65) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(5, 8, 22, 0.4) 0%,
+      transparent 22%,
+      transparent 78%,
+      rgba(5, 8, 22, 0.4) 100%
+    );
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-grid-radial,
+  .neon-grid-v-sharp,
+  .neon-grid-v-glow,
+  .neon-grid-h-sharp,
+  .neon-grid-h-glow {
+    animation: none;
+    opacity: 0.35;
+  }
+
+  .neon-grid-streak--a,
+  .neon-grid-streak--b,
+  .neon-grid-streak--c {
+    animation: none;
+    opacity: 0.45;
+    transform: none;
+  }
+}
+
+/* ─── Accent utilities ─── */
+.text-accent {
+  color: var(--accent);
+}
+
+.text-gradient-accent {
+  background: linear-gradient(
+    to right,
+    var(--accent),
+    var(--accent-secondary)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Marketing: layered ambient blobs (blur + low opacity) */
+.marketing-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+.marketing-blobs::before,
+.marketing-blobs::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.16;
+}
+
+/* blob A */
+.marketing-blobs::before {
+  width: min(72vw, 720px);
+  height: min(72vw, 720px);
+  top: -12%;
+  left: -8%;
+  background: radial-gradient(
+    circle,
+    var(--accent-glow-soft) 0%,
+    transparent 62%
+  );
+}
+
+/* blob B */
+.marketing-blobs::after {
+  width: min(65vw, 620px);
+  height: min(65vw, 620px);
+  bottom: -18%;
+  right: -12%;
+  background: radial-gradient(
+    circle,
+    var(--accent-glow-soft) 0%,
+    transparent 58%
+  );
+}
+
+.marketing-blobs__mid {
+  position: absolute;
+  width: min(50vw, 480px);
+  height: min(50vw, 480px);
+  top: 38%;
+  left: 48%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  filter: blur(110px);
+  opacity: 0.12;
+  background: radial-gradient(
+    circle,
+    rgba(var(--accent-rgb), 0.2) 0%,
+    transparent 60%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketing-cursor-glow {
+    display: none;
+  }
+}
+
+/* ─── Git timeline dashboard loader ─── */
+@keyframes git-timeline-dot {
+  0% {
+    left: -2%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    left: 102%;
+    opacity: 0;
+  }
+}
+
+@keyframes git-timeline-line-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes git-timeline-pulse {
+  0% {
+    transform: scaleY(0);
+    opacity: 0.5;
+  }
+  35% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+.git-timeline-loader__dot {
+  position: absolute;
+  top: 50%;
+  margin-top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  color: #4ade80;
+  background-color: currentColor;
+  box-shadow: 0 0 10px currentColor;
+  animation: git-timeline-dot 2.8s linear infinite;
+}
+
+.git-timeline-loader__pulse {
+  position: absolute;
+  bottom: 50%;
+  width: 1px;
+  height: 72px;
+  transform-origin: bottom center;
+  animation: git-timeline-pulse 0.85s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .git-timeline-loader__dot {
+    animation: none;
+    left: 50% !important;
+    opacity: 0.6;
+  }
+
+  .git-timeline-loader__pulse {
+    animation: none;
+    opacity: 0;
+  }
+}
