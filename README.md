@@ -54,6 +54,3 @@ Point `BACKEND_URL` at your deployed API when running the frontend in production
 
 Private / all rights reserved unless you add an explicit license file.
 
-Unlocking achievements 🚀
-
-Unlocking achievements 🚀
